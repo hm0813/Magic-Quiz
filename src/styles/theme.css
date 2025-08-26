@@ -570,3 +570,230 @@ body[data-house="hufflepuff"] .house-name { color: #ECB939; }
     linear-gradient(0deg, rgba(255,255,255,.18), rgba(255,255,255,0)),
     repeating-linear-gradient(90deg, rgba(0,0,0,.04) 0 1px, transparent 1px 10px);
 }
+/* Results medal */
+.hp-medal {
+  position: relative;
+  display: inline-block;
+  padding: .4rem .8rem;
+  border-radius: 9999px;
+  font-weight: 700;
+  background: linear-gradient(90deg, #fbbf24, #fde68a);
+  color: #7c2d12;
+  box-shadow: 0 6px 22px rgba(0,0,0,.12);
+}
+.hp-medal-shine {
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.7), transparent 45%);
+  mix-blend-mode: screen;
+  border-radius: inherit;
+  animation: hp-medal-pulse 2.2s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes hp-medal-pulse {
+  0%,100% { opacity:.65; transform: scale(1);}
+  50%     { opacity:.95; transform: scale(1.03);}
+}
+/* Lifeline buttons */
+.hp-life {
+  border: 1px solid rgba(0,0,0,.18);
+  border-radius: .75rem;
+  padding: .5rem .75rem;
+  font-size: .9rem;
+  background: #fff;
+  transition: transform .12s ease, background .15s ease, box-shadow .15s ease;
+}
+.hp-life:hover { background:#ffffff; box-shadow: 0 6px 14px rgba(0,0,0,.06) }
+.hp-life:active { transform: translateY(1px) }
+.hp-life:disabled { opacity:.45; cursor:not-allowed }
+
+.hp-life-badge {
+  display:inline-flex; align-items:center; gap:.4rem;
+  padding:.2rem .5rem; border-radius:.6rem;
+  font-size:.75rem; background: #ecfdf5; border:1px solid #10b981; color:#065f46;
+}
+
+/* Accents when a spell is active */
+.hp-accio { outline: 2px dashed #10b981; outline-offset: 2px; }
+.hp-removed { opacity:.45; filter: grayscale(.4); }
+
+/* Patronus feedback */
+.hp-shield {
+  animation: hp-shield-pop .35s ease-out;
+}
+@keyframes hp-shield-pop {
+  from { transform: scale(.9); opacity:0 }
+  to   { transform: scale(1); opacity:1 }
+}
+/* --- Results polish --- */
+.hp-ribbon {
+  position: relative;
+  border-radius: 1rem;
+  padding: 1.2rem 1rem 1rem;
+  box-shadow: 0 20px 40px rgba(0,0,0,.08);
+  overflow: hidden;
+}
+.hp-ribbon::before {
+  content: "";
+  position: absolute; inset: 0;
+  background: radial-gradient(120% 80% at 50% 0%, rgba(255,255,255,.35), rgba(255,255,255,0) 60%);
+  pointer-events: none;
+}
+.hp-ribbon-badge {
+  position: absolute; top: -18px; left: 50%; transform: translateX(-50%);
+  background: rgba(255,255,255,.9);
+  border: 1px solid rgba(0,0,0,.12);
+  padding: .25rem .75rem; border-radius: 9999px;
+  font-weight: 700; font-size: .75rem;
+}
+
+/* score ring sizing */
+.hp-ring { width: 140px; height: 140px; }
+.hp-ring text { font-weight: 800; }
+
+/* confetti */
+.hp-confetti {
+  position: absolute; inset: 0; overflow: hidden; pointer-events: none;
+}
+.hp-confetti > i {
+  position: absolute;
+  width: 8px; height: 12px; border-radius: 2px;
+  opacity: .9;
+  animation: hp-fall 900ms ease-out forwards;
+}
+@keyframes hp-fall {
+  0% { transform: translateY(-20px) rotate(0deg); }
+  100% { transform: translateY(120%) rotate(380deg); opacity: 0; }
+}
+/* --- Daily Prophet look --- */
+.hp-daily-prophet {
+  background:
+    radial-gradient(ellipse at center, rgba(0,0,0,0.06), rgba(0,0,0,0) 60%),
+    #f8f3e6;
+  border: 1px solid rgba(0,0,0,0.15);
+  font-family: ui-serif, Georgia, "Times New Roman", Times, serif;
+}
+
+.hp-dp-name {
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-align: center;
+  font-size: clamp(20px, 4vw, 34px);
+  margin-bottom: .25rem;
+}
+
+.hp-dp-marquee {
+  position: relative;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.15);
+  border-radius: .5rem;
+}
+.hp-dp-track {
+  display: inline-block;
+  white-space: nowrap;
+  padding: .4rem .8rem;
+  animation: hp-marquee 14s linear infinite;
+}
+.hp-dp-track span { margin-right: 2rem; }
+@keyframes hp-marquee {
+  0% { transform: translateX(0%) }
+  100% { transform: translateX(-50%) }
+}
+/* --- Wand cursor --- */
+/* remove this old rule */
+html, body, #root { cursor: url("/assets/ui/wand.png") 8 2, auto; }
+
+/* --- Spark trail --- */
+.hp-wand-layer { pointer-events: none; position: fixed; inset: 0; z-index: 50; }
+.hp-spark {
+  position: absolute; width: 6px; height: 6px; border-radius: 9999px;
+  background: radial-gradient(#fff, rgba(255,255,255,.2));
+  box-shadow: 0 0 12px rgba(255,255,255,.8), 0 0 24px var(--hp-primary);
+  animation: hp-spark-pop .6s ease-out forwards;
+}
+@keyframes hp-spark-pop {
+  0% { transform: translate(-50%,-50%) scale(.6); opacity: 1; }
+  100%{ transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0); opacity: 0; }
+}
+
+/* --- Talking Portraits --- */
+.hp-portrait {
+  display: grid; grid-template-columns: 56px 1fr; gap: .75rem;
+  border: 1px solid rgba(0,0,0,.12); border-radius: 1rem; padding: .75rem .9rem; background: #fff;
+  box-shadow: 0 10px 24px rgba(0,0,0,.06);
+}
+.hp-portrait img { width: 56px; height: 56px; border-radius: .75rem; object-fit: cover; }
+.hp-portrait .name { font-weight: 800; }
+.hp-portrait .bubble { font-size: .9rem; color: #374151; }
+
+/* --- Wrong answer smoke puff --- */
+.hp-smoke {
+  position: absolute; right: 16px; bottom: 16px; width: 16px; height: 16px;
+}
+.hp-smoke i {
+  position: absolute; left: 0; bottom: 0; width: 10px; height: 10px; border-radius: 9999px;
+  background: radial-gradient(rgba(70,70,70,.85), rgba(70,70,70,0));
+  opacity: 0; animation: hp-smoke-rise 900ms ease-out forwards;
+}
+.hp-smoke i:nth-child(2){ animation-delay: 90ms; left: 8px }
+.hp-smoke i:nth-child(3){ animation-delay: 160ms; left: -6px }
+@keyframes hp-smoke-rise {
+  0% { transform: translateY(0) scale(.9); opacity: .0; }
+  30%{ opacity: .7; }
+  100%{ transform: translateY(-26px) scale(1.6); opacity: 0; }
+}
+/* --- Golden Snitch Timer --- */
+.hp-snitch-wrap { position: relative; padding-top: .5rem; }
+.hp-snitch-track {
+  position: relative; height: 14px; border-radius: 9999px;
+  background: linear-gradient(90deg, rgba(0,0,0,.08), rgba(0,0,0,.12));
+  overflow: hidden;
+}
+.hp-snitch-fill {
+  position: absolute; inset: 0 auto 0 0; height: 100%;
+  background: linear-gradient(90deg, rgba(255,215,0,.25), rgba(255,215,0,.45));
+  transition: width .3s ease;
+}
+.hp-snitch {
+  position: absolute; top: 50%; transform: translate(-50%, -50%);
+  width: 32px; height: 32px; pointer-events: none;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,.25));
+  transition: left .3s ease;
+}
+.hp-wing { transform-origin: right center; animation: hp-flap .7s ease-in-out infinite; }
+.hp-wing.left { transform-origin: left center; animation-delay: .35s; }
+@keyframes hp-flap {
+  0%,100% { transform: rotate(8deg); }
+  50%     { transform: rotate(-10deg); }
+}
+/* --- Results confetti (pure CSS) --- */
+.hp-confetti {
+  position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+}
+.hp-confetti i {
+  --x: calc(10% + 80% * random);
+  --size: calc(4px + 6px * random);
+  position: absolute; top: -10px; left: var(--x);
+  width: var(--size); height: var(--size);
+  transform: translateY(-20px) rotate(0deg);
+  background: hsl(calc(360 * random), 90%, 60%);
+  opacity: .9;
+  animation: hp-confetti-fall var(--d, 1.2s) ease-in forwards;
+  border-radius: 2px;
+}
+@keyframes hp-confetti-fall {
+  0% { transform: translateY(-20px) rotate(0deg); }
+  100% { transform: translateY(220px) rotate(540deg); opacity: .0; }
+}
+
+/* --- Special Modes --- */
+.hp-bludger { animation: hp-shake .45s ease; }
+@keyframes hp-shake {
+  0%,100% { transform: translateX(0) }
+  20% { transform: translateX(-4px) }
+  40% { transform: translateX(4px) }
+  60% { transform: translateX(-3px) }
+  80% { transform: translateX(3px) }
+}
+
