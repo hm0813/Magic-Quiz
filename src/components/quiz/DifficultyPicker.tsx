@@ -1,37 +1,20 @@
-import { DIFFICULTY, useSettings, type Difficulty } from "../../state/settings";
-
-const OPTS: { key: Difficulty; title: string; desc: string }[] = [
-  { key: "first-year", title: "First Year", desc: "Comfy timer, all lifelines, fewer points" },
-  { key: "owl",        title: "O.W.L.",     desc: "Balanced timer, all lifelines" },
-  { key: "newt",       title: "N.E.W.T.",   desc: "Shorter timer, fewer hints, more points" },
-];
+import { useSettings } from "../../state/settings";
 
 export default function DifficultyPicker() {
-  const s = useSettings();
+  const d = useSettings(s => s.difficulty);
+  const set = useSettings(s => s.setDifficulty);
+
   return (
-    <div className="hp-card p-4">
-      <div className="font-semibold mb-2">Difficulty</div>
-      <div className="grid sm:grid-cols-3 gap-2">
-        {OPTS.map(o => {
-          const active = s.difficulty === o.key;
-          return (
-            <button
-              key={o.key}
-              onClick={() => s.setDifficulty(o.key)}
-              className={[
-                "text-left p-3 rounded-lg border transition",
-                active ? "hp-border-primary hp-text-primary bg-white" : "hover:bg-white"
-              ].join(" ")}
-            >
-              <div className="font-bold">{o.title}</div>
-              <div className="text-xs text-stone-600">{o.desc}</div>
-              <div className="text-[11px] text-stone-500 mt-1">
-                Timer ×{DIFFICULTY[o.key].timerMult} • Points ×{DIFFICULTY[o.key].pointsMult}
-              </div>
-            </button>
-          );
-        })}
-      </div>
+    <div className="hp-card p-4 flex items-center gap-3">
+      <span className="text-sm font-medium">Difficulty:</span>
+      <button
+        onClick={() => set("OWL")}
+        className={["px-3 py-1 rounded-lg border text-sm", d==="OWL"?"bg-stone-900 text-white":"hover:bg-white"].join(" ")}
+      >O.W.L.s (Casual)</button>
+      <button
+        onClick={() => set("NEWT")}
+        className={["px-3 py-1 rounded-lg border text-sm", d==="NEWT"?"bg-stone-900 text-white":"hover:bg-white"].join(" ")}
+      >N.E.W.T.s (Hard)</button>
     </div>
   );
 }

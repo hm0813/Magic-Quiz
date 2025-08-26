@@ -1,16 +1,16 @@
-// super tiny pub/sub for decoupling UI effects & achievements
+// Tiny pub/sub. Import { emit, on } anywhere.
 export type Handler<T = any> = (payload: T) => void;
 
 const channels = new Map<string, Set<Handler>>();
 
 export function on<T = any>(evt: string, fn: Handler<T>) {
   if (!channels.has(evt)) channels.set(evt, new Set());
-  channels.get(evt)!.add(fn as Handler);
+  channels.get(evt)!.add(fn);
   return () => off(evt, fn);
 }
 
 export function off<T = any>(evt: string, fn: Handler<T>) {
-  channels.get(evt)?.delete(fn as Handler);
+  channels.get(evt)?.delete(fn);
 }
 
 export function emit<T = any>(evt: string, payload?: T) {
@@ -19,10 +19,12 @@ export function emit<T = any>(evt: string, payload?: T) {
   });
 }
 
-// common events we’ll use:
-// 'answer:correct'  { category, index }
-// 'answer:wrong'    { category, index }
-// 'spell:used'      { type: 'accio'|'expelliarmus'|'lumos'|'patronus' }
-// 'horcrux:part'    { partIndex, total }
-// 'horcrux:destroy' { id }
-// 'achievement:unlock' { id }
+/*
+Emits we use:
+
+emit('answer:correct', { category?: string, index?: number })
+emit('answer:wrong',   { category?: string, index?: number })
+emit('spell:used',     { type: 'accio'|'expelliarmus'|'lumos'|'patronus'|'patronus-triggered' })
+emit('horcrux:partComplete', { ok: boolean, partIndex: number })
+emit('achievement:unlock', { id: string })
+*/

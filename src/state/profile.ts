@@ -1,61 +1,56 @@
-// src/state/profile.ts
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { HouseKey } from "../theme/houses";
-import { applyHouseTheme } from "../theme/houses";
 
-type Spells = { accio: number; expelliarmus: number; lumos: number };
+export type HouseKey = "gryffindor"|"slytherin"|"ravenclaw"|"hufflepuff";
 
-export type ProfileState = {
+type Spells = {
+  accio: number;         // reveals
+  expelliarmus: number;  // remove wrong option
+  lumos: number;         // show hint
+};
+
+type Profile = {
   name: string;
   house: HouseKey | null;
   xp: number;
-  spells: Spells;
   patronusUnlocked: boolean;
+  spells: Spells;
 
   setName: (n: string) => void;
   setHouse: (h: HouseKey) => void;
-  addXp: (delta: number) => void;
-  grantSpell: (key: keyof Spells, amount?: number) => void;
+  addXp: (n: number) => void;
+  useSpell: (k: keyof Spells) => boolean;
   unlockPatronus: () => void;
-  resetAll: () => void;
+  resetProfile: () => void;
 };
 
-export const useProfileStore = create<ProfileState>()(
+export const useProfileStore = create<Profile>()(
   persist(
     (set, get) => ({
       name: "",
       house: null,
       xp: 0,
-      spells: { accio: 1, expelliarmus: 1, lumos: 1 },
       patronusUnlocked: false,
+      spells: { accio: 2, expelliarmus: 2, lumos: 2 },
 
-      setName: (n) => set({ name: n }),
-      setHouse: (h) => {
-        applyHouseTheme(h);        // immediate theme swap
-        set({ house: h });
+      setName: (name) => set({ name }),
+      setHouse: (house) => set({ house }),
+      addXp: (n) => set({ xp: get().xp + n }),
+      useSpell: (k) => {
+        const cur = get().spells[k];
+        if (cur <= 0) return false;
+        set({ spells: { ...get().spells, [k]: cur - 1 } });
+        return true;
       },
-      addXp: (d) => set({ xp: Math.max(0, get().xp + d) }),
-      grantSpell: (key, amount = 1) =>
-        set({ spells: { ...get().spells, [key]: get().spells[key] + amount } }),
       unlockPatronus: () => set({ patronusUnlocked: true }),
-      resetAll: () => {
-        applyHouseTheme(null);
-        set({
-          name: "",
-          house: null,
-          xp: 0,
-          spells: { accio: 1, expelliarmus: 1, lumos: 1 },
-          patronusUnlocked: false,
-        });
-      },
+      resetProfile: () => set({
+        name: "",
+        house: null,
+        xp: 0,
+        patronusUnlocked: false,
+        spells: { accio: 2, expelliarmus: 2, lumos: 2},
+      }),
     }),
-    {
-      name: "hp-quiz-profile",
-      onRehydrateStorage: () => (state) => {
-        // when the app loads, apply the saved theme
-        if (state?.house) applyHouseTheme(state.house);
-      },
-    }
+    { name: "hp-profile-v1" }
   )
 );

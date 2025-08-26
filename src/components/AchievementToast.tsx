@@ -1,33 +1,32 @@
-// src/components/AchievementToast.tsx
-import { useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ACHIEVEMENTS } from "../data/achievements";
-import { useAchievements } from "../state/achievements";
+import { useEffect, useState } from "react";
+import { BADGE_DEFS, useAchievements } from "../state/achievements";
 
 export default function AchievementToast() {
-  const { toast, clearToast } = useAchievements();
-  useEffect(() => {
-    if (!toast) return;
-    const t = setTimeout(() => clearToast(), 1800);
-    return () => clearTimeout(t);
-  }, [toast, clearToast]);
-  if (!toast) return null;
+  const { toasts, clearToasts } = useAchievements();
+  const [id, setId] = useState<string | null>(null);
 
-  const a = ACHIEVEMENTS[toast.key];
+  useEffect(() => {
+    if (!toasts.length) return;
+    setId(toasts[0]);
+    const t = setTimeout(() => {
+      useAchievements.setState((s) => ({ toasts: s.toasts.slice(1) }));
+      setId(null);
+      if (toasts.length === 1) clearToasts();
+    }, 2200);
+    return () => clearTimeout(t);
+  }, [toasts, clearToasts]);
+
+  if (!id) return null;
+  const b = BADGE_DEFS.find(x => x.id === id);
+  if (!b) return null;
+
   return (
-    <div className="fixed top-4 right-4 z-50">
-      <AnimatePresence>
-        <motion.div
-          key={a.key}
-          initial={{ opacity: 0, y: -8, scale: 0.96 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: -8, scale: 0.96 }}
-          className="px-4 py-3 rounded-xl border bg-white shadow-lg"
-        >
-          <div className="text-lg">{a.emoji} <b>{a.title}</b></div>
-          <div className="text-xs text-stone-600">{a.description}</div>
-        </motion.div>
-      </AnimatePresence>
+    <div className="fixed bottom-4 right-4 z-50">
+      <div className="rounded-xl bg-white border shadow-lg px-4 py-3 w-[280px]">
+        <div className="text-xs uppercase tracking-wider text-stone-500">Achievement unlocked</div>
+        <div className="font-bold">{b.title}</div>
+        <div className="text-xs text-stone-600">{b.description}</div>
+      </div>
     </div>
   );
 }

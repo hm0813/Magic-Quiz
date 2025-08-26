@@ -1,38 +1,33 @@
-// src/state/achievements.ts
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { AchievementKey } from "../data/achievements";
 
-type AchievementsState = {
-  unlocked: Record<AchievementKey, string>; // iso date per key
-  bestScore: number;                        // global best across categories
-  toast: { key: AchievementKey; at: number } | null;
-  unlock: (key: AchievementKey) => void;
-  maybeBest: (score: number) => boolean;    // returns true if new best (or tie)
-  clearToast: () => void;
+export const BADGE_DEFS = [
+  { id: "first_correct",   title: "You’re a Wizard!",     description: "Your first correct answer." },
+  { id: "perfect_score",   title: "I Open at the Close",  description: "Finish a quiz with a perfect score." },
+  { id: "patronus_pro",    title: "Protego Patronum",     description: "Your Patronus saved you once." },
+  { id: "top_scorer",      title: "The Chosen One",       description: "Top weekly score (local)." },
+];
+
+type AchState = {
+  unlocked: Record<string, number>;
+  toasts: string[];
+  unlock: (id: string) => void;
+  queue: (id: string) => void;
+  clearToasts: () => void;
 };
 
-export const useAchievements = create<AchievementsState>()(
+export const useAchievements = create<AchState>()(
   persist(
     (set, get) => ({
-      unlocked: {} as Record<AchievementKey, string>,
-      bestScore: 0,
-      toast: null,
-      unlock: (key) => {
-        const u = { ...get().unlocked };
-        if (u[key]) return; // already unlocked
-        u[key] = new Date().toISOString();
-        set({ unlocked: u, toast: { key, at: Date.now() } });
+      unlocked: {},
+      toasts: [],
+      unlock: (id) => {
+        if (get().unlocked[id]) return;
+        set((s) => ({ unlocked: { ...s.unlocked, [id]: Date.now() } }));
+        get().queue(id);
       },
-      maybeBest: (score) => {
-        const cur = get().bestScore;
-        if (score >= cur) {
-          set({ bestScore: score });
-          return true;
-        }
-        return false;
-      },
-      clearToast: () => set({ toast: null }),
+      queue: (id) => set((s) => ({ toasts: [...s.toasts, id] })),
+      clearToasts: () => set({ toasts: [] }),
     }),
     { name: "hp-achievements-v1" }
   )
