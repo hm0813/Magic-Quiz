@@ -1,0 +1,9 @@
+@import "./styles/theme.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body, #root { height: 100%; }
+body { @apply bg-stone-100 text-stone-900 antialiased; }
+a { @apply underline; }
